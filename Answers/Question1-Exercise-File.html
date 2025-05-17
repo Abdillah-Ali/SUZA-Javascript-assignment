@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JavaScript Form Validation</title>
+  <style>
+    label {
+      display: inline-block;
+      width: 150px;
+      margin-bottom: 10px;
+      vertical-align: top;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea,
+    select {
+      width: 200px;
+      margin-bottom: 5px;
+    }
+
+    .required {
+      color: red;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 0.85em;
+      margin-left: 10px;
+      display: inline-block;
+    }
+
+    .error-border {
+      border: 1px solid red;
+    }
+
+    input[type="submit"] {
+      margin-left: 155px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Test JavaScript Form Validation</h2>
+
+  <form id="myForm" onsubmit="return validateForm();">
+    <div>
+      <label>Name <span class="required">*</span></label>
+      <input type="text" name="name" id="name">
+      <span class="error-message" id="nameError"></span><br>
+    </div>
+
+    <div>
+      <label>Address <span class="required">*</span></label>
+      <textarea name="address" id="address" rows="3"></textarea>
+      <span class="error-message" id="addressError"></span><br>
+    </div>
+
+    <div>
+      <label>Zip Code <span class="required">*</span></label>
+      <input type="text" name="zip" id="zip">
+      <span class="error-message" id="zipError"></span><br>
+    </div>
+
+    <div>
+      <label>Country <span class="required">*</span></label>
+      <select name="country" id="country">
+        <option>Please select...</option>
+        <option>Tanzania</option>
+        <option>Kenya</option>
+      </select>
+      <span class="error-message" id="countryError"></span><br>
+    </div>
+
+    <div>
+      <label>Gender <span class="required">*</span></label>
+      <input type="radio" name="gender" value="male"> Male
+      <input type="radio" name="gender" value="female"> Female
+      <span class="error-message" id="genderError"></span><br>
+    </div>
+
+    <div>
+      <label>Preferences <span class="required">*</span></label>
+      <input type="checkbox" name="color" value="red"> Red
+      <input type="checkbox" name="color" value="green"> Green
+      <input type="checkbox" name="color" value="blue"> Blue
+      <span class="error-message" id="colorError"></span><br>
+    </div>
+
+    <div>
+      <label>Phone <span class="required">*</span></label>
+      <input type="text" name="phone" id="phone">
+      <span class="error-message" id="phoneError"></span><br>
+    </div>
+
+    <div>
+      <label>Email <span class="required">*</span></label>
+      <input type="email" name="email" id="email">
+      <span class="error-message" id="emailError"></span><br>
+    </div>
+
+    <div>
+      <label>Password (6-8 characters) <span class="required">*</span></label>
+      <input type="password" name="password" id="password">
+      <span class="error-message" id="passwordError"></span><br>
+    </div>
+
+    <div>
+      <label>Verify password <span class="required">*</span></label>
+      <input type="password" name="confirm" id="confirm">
+      <span class="error-message" id="confirmError"></span><br><br>
+    </div>
+
+    <input type="submit" value="SEND">
+    <input type="reset" value="CLEAR" onclick="clearErrors();">
+  </form>
+
+  <script>
+    function validateForm() {
+      let valid = true;
+
+      // Clear all previous errors
+      clearErrors();
+
+      const name = document.getElementById("name");
+      const address = document.getElementById("address");
+      const zip = document.getElementById("zip");
+      const country = document.getElementById("country");
+      const gender = document.querySelector('input[name="gender"]:checked');
+      const colors = document.querySelectorAll('input[name="color"]:checked');
+      const phone = document.getElementById("phone");
+      const email = document.getElementById("email");
+      const password = document.getElementById("password");
+      const confirm = document.getElementById("confirm");
+
+      // Name
+      if (name.value.trim() === "" || name.value.length > 20) {
+        setError(name, "nameError", "Required, max 20 characters");
+        valid = false;
+      }
+
+      // Address
+      if (address.value.trim() === "") {
+        setError(address, "addressError", "Address is required");
+        valid = false;
+      }
+
+      // Zip Code
+      if (zip.value.trim() === "") {
+        setError(zip, "zipError", "Zip code is required");
+        valid = false;
+      }
+
+      // Country
+      if (country.value === "Please select...") {
+        setError(country, "countryError", "Select a country");
+        valid = false;
+      }
+
+      // Gender
+      if (!gender) {
+        document.getElementById("genderError").innerText = "Select gender";
+        valid = false;
+      }
+
+      // Preferences
+      if (colors.length < 2) {
+        document.getElementById("colorError").innerText = "Select at least two";
+        valid = false;
+      }
+
+      // Phone
+      if (phone.value.trim() === "") {
+        setError(phone, "phoneError", "Phone is required");
+        valid = false;
+      }
+
+      // Email
+      if (email.value.trim() === "") {
+        setError(email, "emailError", "Email is required");
+        valid = false;
+      }
+
+      // Password
+      if (password.value.length < 6 || password.value.length > 8) {
+        setError(password, "passwordError", "6–8 characters required");
+        valid = false;
+      }
+
+      // Confirm password
+      if (password.value !== confirm.value) {
+        setError(confirm, "confirmError", "Passwords do not match");
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    function setError(element, errorId, message) {
+      document.getElementById(errorId).innerText = message;
+      element.classList.add("error-border");
+    }
+
+    function clearErrors() {
+      const errorMessages = document.querySelectorAll(".error-message");
+      errorMessages.forEach(msg => msg.innerText = "");
+
+      const errorFields = document.querySelectorAll(".error-border");
+      errorFields.forEach(field => field.classList.remove("error-border"));
+    }
+  </script>
+
+</body>
+</html>
