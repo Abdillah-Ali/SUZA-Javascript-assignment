@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Registration Form</title>
+  <style>
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    textarea,
+    select {
+      width: 250px;
+      padding: 5px;
+    }
+
+    .error {
+      color: red;
+      font-size: 0.85em;
+      margin-left: 10px;
+    }
+
+    .error-border {
+      border: 1px solid red;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Student Registration Form</h2>
+
+  <form id="registrationForm" onsubmit="return validateForm();">
+
+    <label>Student Name:</label>
+    <input type="text" id="name">
+    <span class="error" id="nameError"></span>
+
+    <label>Register Number:</label>
+    <input type="text" id="regNo">
+    <span class="error" id="regNoError"></span>
+
+    <label>Date of Birth:</label>
+    <input type="date" id="dob">
+
+    <label>Program:</label>
+    <input type="text" id="program">
+
+    <label>Email ID:</label>
+    <input type="email" id="email">
+    <span class="error" id="emailError"></span>
+
+    <label>Temporary Address:</label>
+    <textarea id="tempAddress" rows="3"></textarea>
+    <span class="error" id="tempAddressError"></span>
+
+    <label>
+      <input type="checkbox" id="sameAddress" onclick="copyAddress()"> Permanent address is same as temporary
+    </label>
+
+    <label>Permanent Address:</label>
+    <textarea id="permAddress" rows="3"></textarea>
+    <span class="error" id="permAddressError"></span>
+
+    <label>Phone Number:</label>
+    <input type="text" id="phone">
+    <span class="error" id="phoneError"></span><br><br>
+
+    <input type="submit" value="Register">
+    <input type="reset" value="Clear" onclick="clearErrors()">
+
+  </form>
+
+  <script>
+    function validateForm() {
+      clearErrors();
+      let valid = true;
+
+      const name = document.getElementById("name");
+      const regNo = document.getElementById("regNo");
+      const email = document.getElementById("email");
+      const phone = document.getElementById("phone");
+      const tempAddress = document.getElementById("tempAddress");
+      const permAddress = document.getElementById("permAddress");
+
+      // Name: max 30 chars, alphabets only
+      const nameRegex = /^[A-Za-z\s]{1,30}$/;
+      if (!nameRegex.test(name.value)) {
+        setError(name, "nameError", "Only alphabets, max 30 characters.");
+        valid = false;
+      }
+
+      // Register Number: alphabets and numbers only
+      const regNoRegex = /^[A-Za-z0-9]+$/;
+      if (!regNoRegex.test(regNo.value)) {
+        setError(regNo, "regNoError", "Only alphabets and numbers allowed.");
+        valid = false;
+      }
+
+      // Email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.value)) {
+        setError(email, "emailError", "Invalid email format.");
+        valid = false;
+      }
+
+      // Temp Address: required
+      if (tempAddress.value.trim() === "") {
+        setError(tempAddress, "tempAddressError", "Temporary address required.");
+        valid = false;
+      }
+
+      // Perm Address: required if checkbox is not checked
+      if (!document.getElementById("sameAddress").checked && permAddress.value.trim() === "") {
+        setError(permAddress, "permAddressError", "Permanent address required.");
+        valid = false;
+      }
+
+      // Phone: exactly 10 digits
+      const phoneRegex = /^\d{10}$/;
+      if (!phoneRegex.test(phone.value)) {
+        setError(phone, "phoneError", "Phone number must be exactly 10 digits.");
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    function setError(element, errorId, message) {
+      document.getElementById(errorId).innerText = message;
+      element.classList.add("error-border");
+    }
+
+    function clearErrors() {
+      const errors = document.querySelectorAll(".error");
+      errors.forEach(e => e.innerText = "");
+
+      const inputs = document.querySelectorAll(".error-border");
+      inputs.forEach(i => i.classList.remove("error-border"));
+    }
+
+    function copyAddress() {
+      const checkbox = document.getElementById("sameAddress");
+      const temp = document.getElementById("tempAddress");
+      const perm = document.getElementById("permAddress");
+
+      if (checkbox.checked) {
+        perm.value = temp.value;
+        perm.disabled = true;
+      } else {
+        perm.value = "";
+        perm.disabled = false;
+      }
+    }
+  </script>
+
+</body>
+</html>
